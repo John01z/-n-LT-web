@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập Quản Trị - Web-Admin</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body style="background-color: var(--primary-color);">
+    <main class="container" style="max-width: 450px; margin-top: 100px;">
+        <div class="checkout-box" style="border: 2px solid var(--accent-color);">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px; color: var(--primary-color);">Đăng Nhập Web-Admin</h2>
+            <form action="index.html#admin-panel" method="get" onsubmit="alert('Đăng nhập quản trị viên thành công!');">
+                <div class="form-group">
+                    <label>Tài khoản Quản trị:</label>
+                    <input type="text" class="form-input" placeholder="Nhập admin..." required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu Quản trị:</label>
+                    <input type="password" class="form-input" placeholder="Nhập mật khẩu..." required />
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Truy Cập Quản Trị Web</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="index.html#home" style="color: var(--accent-color); font-size: 13px; text-decoration: none;">← Về trang chủ website</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

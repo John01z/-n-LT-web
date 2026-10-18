@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - LUXURY AUTO</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body style="background-color: var(--bg-light);">
+    <header>
+        <div class="logo">
+            <a href="index.html" style="text-decoration:none; color:inherit;">LUXURY <span>AUTO</span></a>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 420px; margin-top: 80px;">
+        <div class="checkout-box">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px;">Đăng Nhập Hệ Thống</h2>
+            <form action="index.html" method="get" onsubmit="alert('Đăng nhập thành công!');">
+                <div class="form-group">
+                    <label>Tên tài khoản hoặc Email:</label>
+                    <input type="text" class="form-input" placeholder="Nhập email..." required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu:</label>
+                    <input type="password" class="form-input" placeholder="Nhập mật khẩu..." required />
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Đăng Nhập Ngay</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="index.html" style="color: var(--primary-color); font-size: 13px; text-decoration: none;">← Về trang chủ website</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
