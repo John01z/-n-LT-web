@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Trị Web-Admin - LUXURY AUTO</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <header>
+        <div class="logo"><i class="fa-solid fa-user-shield"></i> LUXURY <span>ADMIN</span></div>
+        <nav class="main-nav">
+            <ul class="menu">
+                <li><a href="admin-login.html"><i class="fa-solid fa-right-from-bracket"></i> ĐĂNG XUẤT ADMIN</a></li>
+                <li><a href="index.html"><i class="fa-solid fa-globe"></i> VỀ TRANG CHỦ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2 class="section-title">Khu Vực Quản Trị Hệ Thống Web-Admin</h2>
+
+        <!-- A. Thống kê top 5 khách hàng mua cao nhất -->
+        <div class="cart-box" style="margin-bottom: 40px;">
+            <h3><i class="fa-solid fa-chart-line"></i> Thống Kê Top 5 Khách Hàng Mua Hàng Cao Nhất</h3>
+            <div class="search-filter-bar" style="margin-top: 15px; margin-bottom: 20px;">
+                <div class="filter-group">
+                    <label style="font-size: 12px; font-weight: 600;">Từ ngày:</label>
+                    <input type="date" id="stat-from" class="search-input" value="2026-01-01" />
+                </div>
+                <div class="filter-group">
+                    <label style="font-size: 12px; font-weight: 600;">Đến ngày:</label>
+                    <input type="date" id="stat-to" class="search-input" value="2026-12-31" />
+                </div>
+                <div class="filter-group" style="display: flex; align-items: flex-end;">
+                    <button class="btn" style="width: 100%; padding: 12px;" onclick="renderTopCustomers()"><i class="fa-solid fa-filter"></i> Xem Thống Kê</button>
+                </div>
+            </div>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Hạng</th>
+                            <th>Họ Tên Khách Hàng</th>
+                            <th>Các Đơn Hàng (Link xem hóa đơn)</th>
+                            <th>Tổng Tiền Mua</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-stats-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- B. Quản lý tài khoản User (Khóa / Mở / Thêm / Sửa) -->
+        <div class="cart-box" style="margin-bottom: 40px;">
+            <h3><i class="fa-solid fa-users-gear"></i> Quản Lý Tài Khoản User</h3>
+            <form onsubmit="handleSaveUser(event)" style="margin-top: 15px; margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                <input type="hidden" id="admin-user-id" value="" />
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group"><label>Họ và Tên:</label><input type="text" id="admin-user-name" class="form-input" required placeholder="Nhập họ tên..." /></div>
+                    <div class="form-group"><label>Email:</label><input type="email" id="admin-user-email" class="form-input" required placeholder="Nhập email..." /></div>
+                </div>
+                <button type="submit" class="btn" style="padding: 8px 18px; font-size: 13px;"><i class="fa-solid fa-floppy-disk"></i> Lưu User</button>
+            </form>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead><tr><th>ID</th><th>Họ Tên</th><th>Email</th><th>Trạng Thái</th><th>Thao Tác</th></tr></thead>
+                    <tbody id="admin-users-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- C. Quản lý sản phẩm (Đã bán -> Ẩn, Chưa bán -> Xóa vĩnh viễn) -->
+        <div class="cart-box" style="margin-bottom: 40px;">
+            <h3 id="admin-prod-form-title"><i class="fa-solid fa-circle-plus"></i> Thêm / Cập Nhật Sản Phẩm</h3>
+            <form onsubmit="handleSaveProduct(event)" style="margin-top: 15px;">
+                <input type="hidden" id="admin-prod-id" value="" />
+                <div class="form-group"><label>Tên siêu xe:</label><input type="text" id="admin-prod-name" class="form-input" required placeholder="Nhập tên xe..." /></div>
+                <div class="form-group">
+                    <label>Phân loại:</label>
+                    <select id="admin-prod-category" class="form-input" required>
+                        <option value="Roadster">Roadster / Thể Thao</option>
+                        <option value="Sedan">Luxury Sedan</option>
+                        <option value="SUV">Sport SUV</option>
+                        <option value="Hypercar">Hypercar / Độc Bản</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Giá bán (VNĐ):</label><input type="number" id="admin-prod-price" class="form-input" required placeholder="Nhập giá..." /></div>
+                <div class="form-group"><label>Mô tả chi tiết:</label><textarea id="admin-prod-desc" class="form-input" rows="2" placeholder="Nhập thông số động cơ..."></textarea></div>
+                <div class="form-group">
+                    <label>Hình ảnh (Tải lên hoặc URL):</label>
+                    <input type="file" id="admin-prod-file" accept="image/*" class="form-input" onchange="previewProductImage(event)" />
+                    <img id="admin-prod-preview" src="" alt="Preview" style="max-height: 120px; display: none; margin-top: 10px; border-radius: 6px;" />
+                </div>
+                <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> Lưu Sản Phẩm</button>
+            </form>
+
+            <h3 style="margin-top: 35px;"><i class="fa-solid fa-list-check"></i> Danh Sách Sản Phẩm</h3>
+            <div class="admin-table-container" style="margin-top: 15px;">
+                <table class="admin-table">
+                    <thead><tr><th>ID</th><th>Hình</th><th>Tên Xe</th><th>Phân Loại</th><th>Giá</th><th>Tình Trạng</th><th>Thao Tác</th></tr></thead>
+                    <tbody id="admin-products-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- D. Quản lý đơn hàng (Bộ lọc & Cập nhật xuôi chiều) -->
+        <div class="cart-box">
+            <h3><i class="fa-solid fa-boxes-packing"></i> Quản Lý Đơn Hàng (Bộ Lọc & Trạng Thái Xuôi Chiều)</h3>
+            <div class="search-filter-bar" style="margin-top: 15px; margin-bottom: 20px;">
+                <div class="filter-group">
+                    <select id="filter-order-status" class="search-select" onchange="renderAdminOrders()">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Chưa xác nhận">Chưa xác nhận</option>
+                        <option value="Đã xác nhận">Đã xác nhận</option>
+                        <option value="Đã giao (Thành công)">Đã giao (Thành công)</option>
+                        <option value="Hủy đơn">Hủy đơn</option>
+                    </select>
+                </div>
+                <div class="filter-group"><input type="date" id="filter-order-from" class="search-input" onchange="renderAdminOrders()" /></div>
+                <div class="filter-group"><input type="date" id="filter-order-to" class="search-input" onchange="renderAdminOrders()" /></div>
+                <div class="filter-group">
+                    <select id="filter-order-district" class="search-select" onchange="renderAdminOrders()">
+                        <option value="">Tất cả khu vực</option>
+                        <option value="Quận 1">Quận 1</option>
+                        <option value="Quận 3">Quận 3</option>
+                        <option value="Quận 5">Quận 5</option>
+                        <option value="Quận 7">Quận 7</option>
+                        <option value="Thủ Đức">Thủ Đức</option>
+                    </select>
+                </div>
+            </div>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead><tr><th>Mã Đơn</th><th>Khách Hàng</th><th>Ngày</th><th>Khu Vực</th><th>Tổng Tiền</th><th>Trạng Thái</th><th>Chuyển Trạng Thái Xuôi</th></tr></thead>
+                    <tbody id="admin-orders-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer><p>&copy; 2026 LUXURY AUTO - Khu vực quản trị hệ thống</p></footer>
+
+    <!-- SCRIPT LOGIC ADMIN -->
+    <script>
+        if (!localStorage.getItem("db_users")) {
+            localStorage.setItem("db_users", JSON.stringify([
+                { id: 101, name: "Nguyễn Văn A", email: "anguyen@gmail.com", isLocked: false },
+                { id: 102, name: "Trần Nguyên Phúc", email: "phuctran@gmail.com", isLocked: false },
+                { id: 103, name: "Lê Thị B", email: "ble@gmail.com", isLocked: true }
+            ]));
+        }
+
+        let selectedProductImgBase64 = "";
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        function renderAdminUsers() {
+            const users = JSON.parse(localStorage.getItem("db_users")) || [];
+            const tbody = document.getElementById("admin-users-tbody");
+            tbody.innerHTML = "";
+            users.forEach(u => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${u.id}</td>
+                        <td><strong>${u.name}</strong></td>
+                        <td>${u.email}</td>
+                        <td>${u.isLocked ? '<span style="color:red; font-weight:bold;">Đã khóa</span>' : '<span style="color:green;">Hoạt động</span>'}</td>
+                        <td>
+                            <button class="card-btn" style="padding:4px 8px; font-size:12px; background:#0284c7;" onclick="editUser(${u.id})">Sửa</button>
+                            <button class="card-btn" style="padding:4px 8px; font-size:12px; background:${u.isLocked ? '#16a34a' : '#d97706'};" onclick="toggleLockUser(${u.id})">${u.isLocked ? 'Mở' : 'Khóa'}</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editUser(id) {
+            const users = JSON.parse(localStorage.getItem("db_users")) || [];
+            const u = users.find(usr => usr.id === id);
+            if (!u) return;
+            document.getElementById("admin-user-id").value = u.id;
+            document.getElementById("admin-user-name").value = u.name;
+            document.getElementById("admin-user-email").value = u.email;
+        }
+
+        function handleSaveUser(e) {
+            e.preventDefault();
+            let users = JSON.parse(localStorage.getItem("db_users")) || [];
+            const uid = document.getElementById("admin-user-id").value;
+            const name = document.getElementById("admin-user-name").value;
+            const email = document.getElementById("admin-user-email").value;
+
+            if (uid) {
+                let u = users.find(usr => usr.id == uid);
+                if (u) { u.name = name; u.email = email; }
+            } else {
+                users.push({ id: Date.now(), name, email, isLocked: false });
+            }
+            localStorage.setItem("db_users", JSON.stringify(users));
+            document.getElementById("admin-user-id").value = "";
+            document.getElementById("admin-user-name").value = "";
+            document.getElementById("admin-user-email").value = "";
+            renderAdminUsers();
+            alert("Lưu thông tin user thành công!");
+        }
+
+        function toggleLockUser(id) {
+            let users = JSON.parse(localStorage.getItem("db_users")) || [];
+            let u = users.find(usr => usr.id === id);
+            if (u) {
+                u.isLocked = !u.isLocked;
+                localStorage.setItem("db_users", JSON.stringify(users));
+                renderAdminUsers();
+            }
+        }
+
+        function renderAdminProducts() {
+            const products = JSON.parse(localStorage.getItem("db_products")) || [];
+            const tbody = document.getElementById("admin-products-tbody");
+            tbody.innerHTML = "";
+            products.forEach(p => {
+                tbody.innerHTML += `
+                    <tr style="${p.hidden ? 'opacity:0.5; background:#f1f5f9;' : ''}">
+                        <td>#${p.id}</td>
+                        <td><img src="${p.img}" width="45" height="30" style="object-fit:cover; border-radius:4px;" /></td>
+                        <td><strong>${p.name}</strong> ${p.hidden ? '<span style="color:red; font-size:11px;">(Đã ẩn)</span>' : ''}</td>
+                        <td>${p.category}</td>
+                        <td>${formatVND(p.price)}</td>
+                        <td>${p.isSold ? '<span style="color:green; font-weight:bold;">Đã bán</span>' : 'Chưa bán'}</td>
+                        <td>
+                            <button class="card-btn" style="padding:4px 8px; font-size:12px; background:#0284c7;" onclick="editProduct(${p.id})">Sửa</button>
+                            <button class="card-btn" style="padding:4px 8px; font-size:12px; background:#ef4444;" onclick="deleteOrHideProduct(${p.id})">Xóa/Ẩn</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editProduct(id) {
+            const products = JSON.parse(localStorage.getItem("db_products")) || [];
+            const p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            document.getElementById("admin-prod-id").value = p.id;
+            document.getElementById("admin-prod-name").value = p.name;
+            document.getElementById("admin-prod-category").value = p.category;
+            document.getElementById("admin-prod-price").value = p.price;
+            document.getElementById("admin-prod-desc").value = p.desc;
+            
+            selectedProductImgBase64 = p.img;
+            const imgPreview = document.getElementById("admin-prod-preview");
+            imgPreview.src = p.img;
+            imgPreview.style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteOrHideProduct(id) {
+            let products = JSON.parse(localStorage.getItem("db_products")) || [];
+            let p = products.find(prod => prod.id === id);
+            if (!p) return;
+
+            if (p.isSold) {
+                alert("Sản phẩm đã có trong đơn hàng! Hệ thống chuyển sang trạng thái ẨN sản phẩm theo quy định.");
+                p.hidden = true;
+            } else {
+                if (confirm("Sản phẩm chưa bán. Bạn có muốn XÓA VĨNH VIỄN không?")) {
+                    products = products.filter(prod => prod.id !== id);
+                } else return;
+            }
+            localStorage.setItem("db_products", JSON.stringify(products));
+            renderAdminProducts();
+        }
+
+        function previewProductImage(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    selectedProductImgBase64 = evt.target.result;
+                    const img = document.getElementById("admin-prod-preview");
+                    img.src = selectedProductImgBase64;
+                    img.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleSaveProduct(e) {
+            e.preventDefault();
+            let products = JSON.parse(localStorage.getItem("db_products")) || [];
+            const pid = document.getElementById("admin-prod-id").value;
+
+            const name = document.getElementById("admin-prod-name").value;
+            const category = document.getElementById("admin-prod-category").value;
+            const price = parseFloat(document.getElementById("admin-prod-price").value);
+            const desc = document.getElementById("admin-prod-desc").value;
+
+            if (pid) {
+                let p = products.find(prod => prod.id == pid);
+                if (p) {
+                    p.name = name; p.category = category; p.price = price; p.desc = desc;
+                    if (selectedProductImgBase64) p.img = selectedProductImgBase64;
+                }
+            } else {
+                products.push({
+                    id: Date.now(), name, category, price, desc,
+                    img: selectedProductImgBase64 || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80",
+                    isSold: false, hidden: false
+                });
+            }
+            localStorage.setItem("db_products", JSON.stringify(products));
+            alert("Lưu sản phẩm thành công!");
+            document.getElementById("admin-prod-id").value = "";
+            document.getElementById("admin-prod-name").value = "";
+            document.getElementById("admin-prod-price").value = "";
+            document.getElementById("admin-prod-desc").value = "";
+            document.getElementById("admin-prod-preview").style.display = "none";
+            selectedProductImgBase64 = "";
+            renderAdminProducts();
+        }
+
+        const statusFlow = {
+            "Chưa xác nhận": ["Đã xác nhận", "Hủy đơn"],
+            "Đã xác nhận": ["Đã giao (Thành công)", "Hủy đơn"],
+            "Đã giao (Thành công)": [],
+            "Hủy đơn": []
+        };
+
+        function updateOrderStatus(orderId, newStatus) {
+            if (!newStatus) return;
+            let orders = JSON.parse(localStorage.getItem("db_orders")) || [];
+            let o = orders.find(x => x.id === orderId);
+            if (!o) return;
+
+            if (o.status === "Đã giao (Thành công)" && newStatus === "Hủy đơn") {
+                alert("Không thể hủy đơn hàng đã giao thành công!");
+                renderAdminOrders();
+                return;
+            }
+
+            if (!(statusFlow[o.status] || []).includes(newStatus)) {
+                alert("Chỉ được cập nhật trạng thái xuôi chiều!");
+                renderAdminOrders();
+                return;
+            }
+
+            o.status = newStatus;
+            localStorage.setItem("db_orders", JSON.stringify(orders));
+            renderAdminOrders();
+            renderTopCustomers();
+            alert(`Đã cập nhật đơn ${orderId} thành: ${newStatus}`);
+        }
+
+        function renderAdminOrders() {
+            let orders = JSON.parse(localStorage.getItem("db_orders")) || [];
+            const statusFilter = document.getElementById("filter-order-status").value;
+            const fromDate = document.getElementById("filter-order-from").value;
+            const toDate = document.getElementById("filter-order-to").value;
+            const districtFilter = document.getElementById("filter-order-district").value;
+
+            if (statusFilter) orders = orders.filter(o => o.status === statusFilter);
+            if (fromDate) orders = orders.filter(o => o.date >= fromDate);
+            if (toDate) orders = orders.filter(o => o.date <= toDate);
+            if (districtFilter) orders = orders.filter(o => o.address.includes(districtFilter));
+
+            const tbody = document.getElementById("admin-orders-tbody");
+            tbody.innerHTML = "";
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Không có đơn hàng nào.</td></tr>`;
+                return;
+            }
+
+            orders.forEach(o => {
+                const nextStatuses = statusFlow[o.status] || [];
+                let selectHtml = nextStatuses.length === 0 ? '<span>Hoàn tất</span>' : 
+                    `<select onchange="updateOrderStatus('${o.id}', this.value)" class="search-select"><option value="">-- Chọn --</option>${nextStatuses.map(s => `<option value="${s}">${s}</option>`).join('')}</select>`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${o.id}</strong></td>
+                        <td>${o.customerName}</td>
+                        <td>${o.date}</td>
+                        <td>${o.address}</td>
+                        <td style="color:var(--accent-color); font-weight:bold;">${formatVND(o.total)}</td>
+                        <td><span class="status-badge confirmed">${o.status}</span></td>
+                        <td>${selectHtml}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderTopCustomers() {
+            const orders = JSON.parse(localStorage.getItem("db_orders")) || [];
+            const fromDate = document.getElementById("stat-from").value;
+            const toDate = document.getElementById("stat-to").value;
+
+            let filteredOrders = orders.filter(o => o.status !== "Hủy đơn");
+            if (fromDate) filteredOrders = filteredOrders.filter(o => o.date >= fromDate);
+            if (toDate) filteredOrders = filteredOrders.filter(o => o.date <= toDate);
+
+            const map = {};
+            filteredOrders.forEach(o => {
+                if (!map[o.customerName]) map[o.customerName] = { customerName: o.customerName, total: 0, orders: [] };
+                map[o.customerName].total += o.total;
+                map[o.customerName].orders.push(o);
+            });
+
+            const sorted = Object.values(map).sort((a, b) => b.total - a.total).slice(0, 5);
+            const tbody = document.getElementById("admin-stats-tbody");
+            tbody.innerHTML = "";
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Chưa có dữ liệu thống kê.</td></tr>`;
+                return;
+            }
+
+            sorted.forEach((item, idx) => {
+                const orderLinks = item.orders.map(o => `<a href="index.html" onclick="localStorage.setItem('lookup_id','${o.id}')" style="color:var(--primary-color); font-weight:bold; text-decoration:underline;">${o.id}</a> (${formatVND(o.total)})`).join("<br/>");
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>#${idx + 1}</strong></td>
+                        <td><strong>${item.customerName}</strong></td>
+                        <td>${orderLinks}</td>
+                        <td style="color:var(--accent-color); font-weight:bold;">${formatVND(item.total)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.onload = function() {
+            renderAdminUsers();
+            renderAdminProducts();
+            renderAdminOrders();
+            renderTopCustomers();
+        };
+    </script>
+</body>
+</html>

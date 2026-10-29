@@ -3,29 +3,65 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng Nhập Quản Trị - Web-Admin</title>
+    <title>Đăng Nhập Quản Trị Web-Admin</title>
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body style="background-color: var(--primary-color);">
-    <main class="container" style="max-width: 500px; margin-top: 100px;">
-        <div class="checkout-box" style="border: 2px solid var(--accent-color);">
-            <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px; color: var(--primary-color);">Đăng Nhập Web-Admin</h2>[cite: 3]
-            <!-- Sử dụng URL/đường dẫn riêng biệt như yêu cầu trong biên bản -->
-            <form action="index.html#admin" method="get" onsubmit="alert('Đăng nhập quản trị thành công!');">
+    <main class="container" style="max-width: 450px; margin-top: 100px;">
+
+        <div class="checkout-box" id="admin-box-login" style="border: 2px solid var(--accent-color);">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px; color: var(--primary-color);">Đăng Nhập Quản Trị Viên</h2>
+            <form onsubmit="handleAdminLogin(event)">
                 <div class="form-group">
-                    <label>Tài khoản Quản trị viên:</label>
-                    <input type="text" class="form-input" placeholder="Nhập admin bất kỳ..." required />[cite: 3]
+                    <label>Tên đăng nhập / Gmail Quản trị:</label>
+                    <input type="text" id="admin-account" class="form-input" placeholder="admin" required />
                 </div>
                 <div class="form-group">
                     <label>Mật khẩu Quản trị:</label>
-                    <input type="password" class="form-input" placeholder="Nhập mật khẩu bất kỳ..." required />[cite: 3]
+                    <input type="password" id="admin-password" class="form-input" placeholder="Mật khẩu..." required />
                 </div>
-                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Truy Cập Trang Quản Trị</button>
+                <p id="admin-login-error" class="form-error"></p>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Truy Cập Quản Trị</button>
+            </form>
+            <p class="demo-hint">Tài khoản quản trị: admin / admin (URL khác trang khách)</p>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 12px;">
+                <a href="#" onclick="showAdminBox('admin-box-forgot'); return false;" style="color: var(--accent-color); text-decoration: underline;">Quên mật khẩu Admin?</a>
+                <a href="index.html" style="color: var(--accent-color); text-decoration: none;">← Về trang chủ</a>
+            </div>
+        </div>
+
+        <div class="checkout-box" id="admin-box-forgot" style="display: none; border: 2px solid var(--accent-color);">
+            <h2 class="section-title" style="font-size: 20px; margin-bottom: 15px; color: var(--primary-color);">Khôi Phục Mật Khẩu Admin</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Tài khoản quản trị mặc định là admin / admin (không có máy chủ gửi email).</p>
+            <form onsubmit="alert('Mật khẩu quản trị mặc định: admin'); showAdminBox('admin-box-login'); return false;">
+                <div class="form-group">
+                    <label>Tên đăng nhập / Gmail Quản trị:</label>
+                    <input type="text" class="form-input" placeholder="admin" required />
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Xem Hướng Dẫn</button>
             </form>
             <div style="text-align: center; margin-top: 15px;">
-                <a href="index.html#home" style="color: var(--accent-color); font-size: 14px; text-decoration: none;">← Về trang chủ website</a>
+                <a href="#" onclick="showAdminBox('admin-box-login'); return false;" style="color: var(--primary-color); font-size: 13px; font-weight: 600;">← Quay lại đăng nhập Admin</a>
             </div>
         </div>
     </main>
+
+    <script src="common.js"></script>
+    <script>
+        if (new URLSearchParams(location.search).get("logout") === "1") Auth.adminLogout();
+        if (Auth.isAdmin()) location.replace("admin.html");
+
+        function showAdminBox(id) {
+            ["admin-box-login", "admin-box-forgot"].forEach(function (b) {
+                document.getElementById(b).style.display = (b === id) ? "block" : "none";
+            });
+        }
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const err = Auth.adminLogin($("admin-account").value, $("admin-password").value);
+            $("admin-login-error").textContent = err;
+            if (!err) location.href = "admin.html";
+        }
+    </script>
 </body>
 </html>

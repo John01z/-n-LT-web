@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập & Đăng Ký - LUXURY AUTO</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body style="background-color: var(--bg-light);">
+    <header>
+        <div class="logo"><a href="index.html">LUXURY <span>AUTO</span></a></div>
+    </header>
+
+    <main class="container" style="max-width: 450px; margin-top: 60px;">
+
+        <div class="checkout-box" id="box-login">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px;">Đăng Nhập Khách Hàng</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Tên đăng nhập / Gmail:</label>
+                    <input type="text" id="login-email" class="form-input" placeholder="Nhập tên đăng nhập / Gmail..." required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu:</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="Nhập mật khẩu..." required />
+                </div>
+                <p id="login-error" class="form-error"></p>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Đăng Nhập & Về Trang Chủ</button>
+            </form>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 13px;">
+                <a href="#" onclick="showBox('box-forgot'); return false;" style="color: var(--primary-color);">Quên mật khẩu?</a>
+                <a href="#" onclick="showBox('box-register'); return false;" style="color: var(--primary-color); font-weight: 600;">Chưa có tài khoản? Đăng ký</a>
+            </div>
+            <p class="demo-hint">Tài khoản demo: anguyen@gmail.com / 123456</p>
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="index.html" style="color: var(--primary-color); font-size: 13px; text-decoration: none;">← Quay lại trang chủ</a>
+            </div>
+        </div>
+
+        <div class="checkout-box" id="box-register" style="display: none;">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px;">Đăng Ký Tài Khoản</h2>
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Họ và tên:</label>
+                    <input type="text" id="reg-name" class="form-input" placeholder="Nguyễn Văn A" required />
+                </div>
+                <div class="form-group">
+                    <label>Tên đăng nhập / Gmail:</label>
+                    <input type="text" id="reg-email" class="form-input" placeholder="Nhập tên đăng nhập / Gmail..." required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới:</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Tạo mật khẩu..." required />
+                </div>
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu:</label>
+                    <input type="password" id="reg-confirm" class="form-input" placeholder="Nhập lại mật khẩu..." required />
+                </div>
+                <p id="reg-error" class="form-error"></p>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Hoàn Tất Đăng Ký</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" onclick="showBox('box-login'); return false;" style="color: var(--primary-color); font-size: 13px; font-weight: 600;">← Quay lại trang đăng nhập</a>
+            </div>
+        </div>
+
+        <div class="checkout-box" id="box-forgot" style="display: none;">
+            <h2 class="section-title" style="font-size: 22px; margin-bottom: 20px;">Khôi Phục Mật Khẩu</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Nhập Gmail và mật khẩu mới để đặt lại (mô phỏng, không dùng máy chủ).</p>
+            <form onsubmit="handleForgot(event)">
+                <div class="form-group">
+                    <label>Tên đăng nhập / Gmail:</label>
+                    <input type="text" id="forgot-email" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu mới:</label>
+                    <input type="password" id="forgot-password" class="form-input" required />
+                </div>
+                <p id="forgot-error" class="form-error"></p>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Đặt Lại Mật Khẩu</button>
+            </form>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" onclick="showBox('box-login'); return false;" style="color: var(--primary-color); font-size: 13px; font-weight: 600;">← Quay lại trang đăng nhập</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="common.js"></script>
+    <script>
+        function showBox(id) {
+            ["box-login", "box-register", "box-forgot"].forEach(function (b) {
+                document.getElementById(b).style.display = (b === id) ? "block" : "none";
+            });
+        }
+        function nextUrl() {
+            const next = new URLSearchParams(location.search).get("next");
+            return next ? ("index.html?next=" + encodeURIComponent(next)) : "index.html";
+        }
+        function handleLogin(e) {
+            e.preventDefault();
+            const err = Auth.login($("login-email").value, $("login-password").value);
+            $("login-error").textContent = err;
+            if (!err) location.href = nextUrl();
+        }
+        function handleRegister(e) {
+            e.preventDefault();
+            const err = Auth.register($("reg-name").value, $("reg-email").value, $("reg-password").value, $("reg-confirm").value);
+            $("reg-error").textContent = err;
+            if (!err) {
+                alert("Đăng ký tài khoản thành công! Mời bạn đăng nhập.");
+                showBox("box-login");
+                $("login-email").value = $("reg-email").value;
+            }
+        }
+        function handleForgot(e) {
+            e.preventDefault();
+            const email = $("forgot-email").value.trim();
+            const password = $("forgot-password").value;
+            const users = read("db_users", []) || [];
+            const u = users.find(function (x) { return x.email.toLowerCase() === email.toLowerCase(); });
+            if (!u) { $("forgot-error").textContent = "Không tìm thấy tài khoản."; return; }
+            if (!password || password.length < 4) { $("forgot-error").textContent = "Mật khẩu tối thiểu 4 ký tự."; return; }
+            u.password = password;
+            save("db_users", users);
+            alert("Đã đặt lại mật khẩu. Mời bạn đăng nhập.");
+            showBox("box-login");
+        }
+    </script>
+</body>
+</html>

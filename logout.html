@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Xuất - Luxury Auto</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body style="background-color: var(--primary-color);">
+    <main class="container" style="max-width: 400px; margin-top: 120px; text-align: center;">
+        <div class="checkout-box" style="padding: 40px;">
+            <h2 style="color: var(--primary-color); margin-bottom: 15px;">Đã đăng xuất</h2>
+            <p style="color: #64748b; margin-bottom: 20px;">Hệ thống đang chuyển về trang chủ...</p>
+            <a href="index.html" class="btn">Về Trang Chủ Ngay</a>
+        </div>
+    </main>
+    <script src="common.js"></script>
+    <script>
+        Auth.logout();
+        setTimeout(function () { window.location.href = "index.html"; }, 1200);
+    </script>
+</body>
+</html>
